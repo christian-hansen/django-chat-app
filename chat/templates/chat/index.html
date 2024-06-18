@@ -19,7 +19,12 @@
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
       <!-- Title -->
-      <span class="mdl-layout-title">Welcome {{ request.user }}</span>
+      <span class="mdl-layout-title">
+        {% if request.user.is_authenticated %}
+        Welcome {{ request.user }}</span>
+        {% else %}
+        Welcome, please login.
+        {% endif %}
       <!-- Add spacer, to align navigation to the right -->
       <div class="mdl-layout-spacer"></div>
       <!-- Navigation. We hide it in small screens. -->
@@ -38,6 +43,8 @@
   <main class="mdl-layout__content">
     <div class="page-content">
       <!-- Your content goes here -->
+
+    {% if request.user.is_authenticated %}
 
     {% for message in chat_messages %}     
       <div>
@@ -64,6 +71,14 @@
           Send
         </button>
       </form>
+      {% else %}
+
+      <h1>Nicht eingeloggt</h1>
+      <p>Du bist aktuell nmicht eingeloggt. Bitte logge Dich ein.<br>
+        Bitte klicke <a href="/login">hier</a>
+
+      {% endif %}
     </div>
+
   </main>
 </div>

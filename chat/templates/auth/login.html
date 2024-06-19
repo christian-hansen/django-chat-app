@@ -4,40 +4,13 @@
 
 <style>
   .page-content {
-    padding: 100px 200px;
+    padding: 50px 50px;
   }
 </style>
 
-<!-- Always shows a header, even in smaller screens. -->
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-  <header class="mdl-layout__header">
-    <div class="mdl-layout__header-row">
-      <!-- Title -->
-      <span class="mdl-layout-title">
-        {% if request.user.is_authenticated %}
-        Welcome {{ request.user }}</span>
-        {% else %}
-        Welcome, please login here.
-        {% endif %}
-      <!-- Add spacer, to align navigation to the right -->
-      <div class="mdl-layout-spacer"></div>
-      <!-- Navigation. We hide it in small screens. -->
-      {% if request.user.is_authenticated %}    <div>Du bist eingeloggt!<br><br></div>    {% endif %}
-    </div>
-  </header>
- 
-  <main class="mdl-layout__content">
-    <div class="page-content">
-      <!-- Your content goes here -->
 
-    {% if request.user.is_authenticated %}
-
-
-      {% else %}
-
-    <!-- Textfield with Floating Label -->
-
-    <h1>Please login here</h1>
+<div class="page-content">
+  <h1>Please login here</h1>
 
     {% if wrongPassword %}
     <p>Benutzername oder Passwort sind falsch<p>
@@ -45,6 +18,7 @@
 
 <form action="/login/" method="post">
   {% csrf_token %}
+  <input type="hidden" name="redirect" value="{{ redirect }}">
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
     <input class="mdl-textfield__input" type="text" name="username" id="username">
     <label class="mdl-textfield__label" for="username">Username..</label>
@@ -59,11 +33,4 @@
   Send
 </button> 
 </form>
-
-
-      {% endif %}
-    </div>
-
-  </main>
 </div>
-

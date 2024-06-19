@@ -1,6 +1,6 @@
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .models import Message, Chat
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -18,15 +18,19 @@ def index(request):
     return render(request, 'chat/index.html', {'chat_messages': chat_messages})
 
 def login_view(request):
-    redirect = request.GET.get('next')
+    redirectLink = request.GET.get('next')
+    print('redirectLink is', redirectLink)
     if request.method == 'POST':
         user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect (request.POST.get('redirect'))
+            if redirectLink is None:
+                return redirect('/chat/')
+            else:
+                return HttpResponseRedirect (request.POST.get('redirectLink'))
         else:
-            return render(request, 'auth/login.html', {'wrongPassword': True}, {'redirect': redirect})
-    return render(request, 'auth/login.html', {'redirect': redirect})
+            return render(request, 'auth/login.html', {'wrongPassword': True}, {'redirect': redirectLink})
+    return render(request, 'auth/login.html', {'redirect': redirectLink})
 
 def register_view(request):
     if request.method == 'POST':
@@ -41,3 +45,8 @@ def register_view(request):
             return render(request, 'auth/register.html', {'error': True})
         # wenn passwörter nicht gleich, fehler
     return render(request, 'auth/register.html')
+
+def logout_view(request):
+    logout(request)
+    redirectToLogin = redirect('/login/')
+    return redirectToLogin

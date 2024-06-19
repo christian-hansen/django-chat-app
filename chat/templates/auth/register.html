@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Registrierung</h1>
+
+    {% if error %}
+    <p>Fehlermeldung<p>
+    {% endif %}
+
+<form action="/register/" method="post" style="display: flex; flex-direction: column;" >
+  {% csrf_token %}
+  <input type="hidden" name="redirect" value="{{ redirect }}">
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="mdl-textfield__input" type="text" name="username" id="username">
+    <label class="mdl-textfield__label" for="username">Username..</label>
+  </div>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="mdl-textfield__input" type="email" name="email" id="email">
+    <label class="mdl-textfield__label" for="email">E-Mail...</label>
+  </div>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="mdl-textfield__input" type="password" name="password" id="password">
+    <label class="mdl-textfield__label" for="password">Password..</label>
+  </div>
+  {% comment %} <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="mdl-textfield__input" type="password" name="password-repeat" id="password-repeat">
+    <label class="mdl-textfield__label" for="password-repeat">Password wiederholen..</label>
+  </div> {% endcomment %}
+  <button
+  class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+>
+  Send
+</button> 
+</form>
+{% endblock%}

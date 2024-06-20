@@ -2,29 +2,53 @@
 {% block content %}
 
 {% if request.user.is_authenticated %}
-      
+      <div id="messageContainer">
           {% for message in chat_messages %}     
             <div>
-              <span class="message-date">{{ message.created_at }}<span> <b>{{ message.author}}:</b> {{ message.text }}    
+              <span class="color-gray">{{ message.created_at }}</span> <b>{{ message.author}}:</b> <i>{{ message.text }} </i>   
             </div>    
           {% endfor %}
- 
+
+      </div>
           <script>
             async function sendMessage() {
               let formData = new FormData()
               let token = '{{ csrf_token }}';
               formData.append('textmessage', messageField.value)
               formData.append('csrfmiddlewaretoken', token)
+              let todayFormatted = getFormattedDate()
                 try {
+                  messageContainer.innerHTML += `
+                  <div class="color-gray" id="tempMessage">
+                    <span class="color-gray">${todayFormatted}</span> <b>{{ request.user }}:</b> <i class="color-gray">${messageField.value} </i>   
+                  </div>`;
+
                   await fetch('/chat/', {
                     method: 'POST',
                     body: formData
                   });
+
+                document.getElementById('tempMessage').remove();
+                messageContainer.innerHTML += `
+                <div id="tempMessage">
+                  <span class="color-gray">${todayFormatted}</span> <b>{{ request.user }}:</b> <i>${messageField.value} </i>   
+                </div>`;
                 console.log('Success!')
+
+
                 } catch(e) {
                     console.error('An error occured', e)
                   }
             }
+
+            function getFormattedDate() {
+              const today = new Date();
+              
+              const options = { year: 'numeric', month: 'long', day: 'numeric' };
+              const formattedDate = today.toLocaleDateString('en-US', options);
+              
+              return formattedDate;
+          }
           </script>
 
             <form onsubmit="sendMessage(); return false;" method="post">

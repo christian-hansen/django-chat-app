@@ -22,16 +22,24 @@
                   <div class="color-gray" id="tempMessage">
                     <span class="color-gray">${todayFormatted}</span> <b>{{ request.user }}:</b> <i class="color-gray">${messageField.value} </i>   
                   </div>`;
-
-                  await fetch('/chat/', {
+                
+                  let response = await fetch('/chat/', {
                     method: 'POST',
                     body: formData
                   });
+                
+                let jsonResponse = await response.json();
+                console.log("Json is", jsonResponse)
 
+                let objResponse = await JSON.parse(jsonResponse)
+                console.log('objResponse is', objResponse)
+                let formattedDateString = formatDateString(objResponse.fields.created_at)
+                console.log(formattedDateString)
                 document.getElementById('tempMessage').remove();
+                console.log("removed tempMessage")
                 messageContainer.innerHTML += `
-                <div id="tempMessage">
-                  <span class="color-gray">${todayFormatted}</span> <b>{{ request.user }}:</b> <i>${messageField.value} </i>   
+                <div>
+                  <span class="color-gray">${formattedDateString}</span> <b>{{ request.user }}:</b> <i>${objResponse.fields.text} </i>   
                 </div>`;
                 console.log('Success!')
 
@@ -42,13 +50,23 @@
             }
 
             function getFormattedDate() {
-              const today = new Date();
+                const today = new Date();
+                
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                const formattedDate = today.toLocaleDateString('en-US', options);
+                
+                return formattedDate;
+            }
+
+            function formatDateString(dateString) {
+              const date = new Date(dateString);
               
               const options = { year: 'numeric', month: 'long', day: 'numeric' };
-              const formattedDate = today.toLocaleDateString('en-US', options);
+              const formattedDate = date.toLocaleDateString('en-US', options);
               
               return formattedDate;
-          }
+            }
+        
           </script>
 
             <form onsubmit="sendMessage(); return false;" method="post">

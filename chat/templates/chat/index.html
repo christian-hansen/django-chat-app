@@ -8,19 +8,37 @@
               <span class="message-date">{{ message.created_at }}<span> <b>{{ message.author}}:</b> {{ message.text }}    
             </div>    
           {% endfor %}
-      
-            <form action="/chat/" method="post">
+ 
+          <script>
+            async function sendMessage() {
+              let formData = new FormData()
+              let token = '{{ csrf_token }}';
+              formData.append('textmessage', messageField.value)
+              formData.append('csrfmiddlewaretoken', token)
+                try {
+                  await fetch('/chat/', {
+                    method: 'POST',
+                    body: formData
+                  });
+                console.log('Success!')
+                } catch(e) {
+                    console.error('An error occured', e)
+                  }
+            }
+          </script>
+
+            <form onsubmit="sendMessage(); return false;" method="post">
               <div
                 class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
               >
-                {% csrf_token %}
+                <!-- {% csrf_token %} -->
                 <input
                   class="mdl-textfield__input"
                   type="text"
                   name="textmessage"
-                  id="sample3"
+                  id="messageField"
                 />
-                <label class="mdl-textfield__label" for="sample3">Text...</label>
+                <label class="mdl-textfield__label" for="messageField">Text...</label>
               </div>
               <button
                 class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
